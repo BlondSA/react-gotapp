@@ -6,34 +6,41 @@ import Spinner from "../spinner";
 import ErrorMessage from "../errorMessage";
 
 export default class RandomChar extends Component {
-  constructor() {
-    super();
-    this.updateCharacter();
-  }
   gotService = new GotService();
-
   state = { character: {}, loading: true, error: false };
 
+  componentDidMount() {
+    this.updateCharacter();
+    this.timerId = setInterval(this.updateCharacter, 1500);
+  }
+  componentWillUnmount() {
+    clearInterval(this.timerId);
+  }
+
   onCharacterLoaded = (character) => {
-    this.setState({character, loading: false});
+    this.setState({ character, loading: false });
   };
 
   onError = () => {
-    this.setState({error: true, loading: false});
+    this.setState({ error: true, loading: false });
   };
 
-  updateCharacter() {
+  updateCharacter = () => {
     const id = Math.floor(Math.random() * 140 + 25); // 25-140
-    this.gotService.getCharacter(id).then(this.onCharacterLoaded).catch(this.onError);
-  }
+    this.gotService
+      .getCharacter(id)
+      .then(this.onCharacterLoaded)
+      .catch(this.onError);
+  };
 
   render() {
-    const {character, loading, error} = this.state;
+    const { character, loading, error } = this.state;
+    console.log("render");
 
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error) ? <View character={character}/> : null;
-    
+    const errorMessage = error ? <ErrorMessage /> : null;
+    const spinner = loading ? <Spinner /> : null;
+    const content = !(loading || error) ? <View character={character} /> : null;
+
     return (
       <div className="random-block rounded">
         {errorMessage}
@@ -44,8 +51,8 @@ export default class RandomChar extends Component {
   }
 }
 
-const View = ({character}) => {
-  const {name, gender, born, died, culture} = character;
+const View = ({ character }) => {
+  const { name, gender, born, died, culture } = character;
   return (
     <>
       <h4>Random Character: {name}</h4>
@@ -77,6 +84,6 @@ View.propTypes = {
     culture: PropTypes.any,
     died: PropTypes.any,
     gender: PropTypes.any,
-    name: PropTypes.any
-  })
+    name: PropTypes.any,
+  }),
 };
