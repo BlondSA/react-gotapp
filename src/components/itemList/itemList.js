@@ -1,43 +1,60 @@
 import React, { Component } from "react";
 import "./itemList.css";
-import GotService from "../../services/gotService";
 import Spinner from "../spinner/spinner";
+import ErrorMessage from "../errorMessage";
 export default class ItemList extends Component {
-  gotService = new GotService();
-  state = { characterList: null };
+  state = { itemList: null, error: false };
 
   componentDidMount() {
-    this.gotService.getAllCharacters().then((characterList) => {
-      this.setState({ characterList });
-    });
+    // eslint-disable-next-line react/prop-types
+    const { getData } = this.props;
+    getData()
+      .then((itemList) => {
+        this.setState({ itemList, error: false });
+      })
+      .catch(() => {
+        this.onError();
+      });
   }
 
-  // componentWillUnmount() {}
+  componentDidCatch() {
+    this.onError();
+  }
+
+  onError = () => {
+    this.setState({ itemList: null, error: true });
+  };
 
   renderItems = (arr) => {
-    return arr.map((item, i) => {
+    return arr.map((item) => {
+      const { id } = item;
+      // eslint-disable-next-line react/prop-types
+      const label = this.props.renderItem(item);
       return (
         <li
-          key={i}
+          key={id}
           className="list-group-item"
           // eslint-disable-next-line react/prop-types
           onClick={() => {
             // eslint-disable-next-line react/prop-types
-            this.props.onCharacterSelected(i + 41);
+            this.props.onItemSelected(id);
           }}
         >
-          {item.name}
+          {label}
         </li>
       );
     });
   };
 
   render() {
-    const { characterList } = this.state;
-    if (!characterList) {
+    const { itemList, error } = this.state;
+    if (error) {
+      return <ErrorMessage />;
+    }
+    if (!itemList) {
       return <Spinner />;
     }
-    const items = this.renderItems(characterList);
+    const items = this.renderItems(itemList);
     return <ul className="item-list list-group">{items}</ul>;
   }
 }
