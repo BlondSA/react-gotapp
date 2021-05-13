@@ -1,9 +1,9 @@
+import PropTypes from "prop-types";
 import React, { Component } from "react";
 import "./itemDetails.css";
 import Spinner from "../spinner";
 import ErrorMessage from "../errorMessage";
 
-// eslint-disable-next-line react/prop-types
 const Field = ({ item, field, label }) => {
   return (
     <li className="list-group-item d-flex justify-content-between">
@@ -11,6 +11,12 @@ const Field = ({ item, field, label }) => {
       <span>{item[field]}</span>
     </li>
   );
+};
+
+Field.propTypes = {
+  field: PropTypes.any,
+  item: PropTypes.any,
+  label: PropTypes.string,
 };
 
 export { Field };
@@ -27,7 +33,6 @@ export default class ItemDetails extends Component {
   };
 
   componentDidUpdate = (prevProps) => {
-    // eslint-disable-next-line react/prop-types
     if (this.props.itemId !== prevProps.itemId) {
       this.updateItem();
     }
@@ -38,13 +43,11 @@ export default class ItemDetails extends Component {
   };
 
   updateItem = () => {
-    // eslint-disable-next-line react/prop-types
     const { itemId, getData } = this.props;
     if (!itemId) {
       return;
     }
     this.setState({ loading: true });
-    // eslint-disable-next-line react/prop-types
     getData(itemId)
       .then(this.onItemDetailsLoaded)
       .catch(() => this.onError());
@@ -76,14 +79,17 @@ export default class ItemDetails extends Component {
       <div className="char-details rounded">
         <h4>{name}</h4>
         <ul className="list-group list-group-flush">
-          {
-            // eslint-disable-next-line react/prop-types
-            React.Children.map(this.props.children, (child) => {
-              return React.cloneElement(child, { item });
-            })
-          }
+          {React.Children.map(this.props.children, (child) => {
+            return React.cloneElement(child, { item });
+          })}
         </ul>
       </div>
     );
   }
 }
+
+ItemDetails.propTypes = {
+  children: PropTypes.any,
+  getData: PropTypes.func,
+  itemId: PropTypes.string,
+};

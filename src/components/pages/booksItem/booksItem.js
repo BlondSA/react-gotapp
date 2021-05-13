@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import GotService from "../../../services/gotService";
 import ItemDetails, { Field } from "../../itemDetails";
 import ErrorMessage from "../../errorMessage/errorMessage";
+import PropTypes from "prop-types";
 
 export default class BooksItem extends Component {
   gotService = new GotService();
@@ -22,7 +23,6 @@ export default class BooksItem extends Component {
 
     return (
       <ItemDetails
-        // eslint-disable-next-line react/prop-types
         itemId={this.props.booksId}
         getData={this.gotService.getBook}
       >
@@ -33,3 +33,7 @@ export default class BooksItem extends Component {
     );
   }
 }
+
+BooksItem.propTypes = {
+  booksId: PropTypes.string,
+};

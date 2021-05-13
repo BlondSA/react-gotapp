@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React, { Component } from "react";
 import "./itemList.css";
 import Spinner from "../spinner/spinner";
@@ -6,7 +7,6 @@ export default class ItemList extends Component {
   state = { itemList: null, error: false };
 
   componentDidMount() {
-    // eslint-disable-next-line react/prop-types
     const { getData } = this.props;
     getData()
       .then((itemList) => {
@@ -28,15 +28,12 @@ export default class ItemList extends Component {
   renderItems = (arr) => {
     return arr.map((item) => {
       const { id } = item;
-      // eslint-disable-next-line react/prop-types
       const label = this.props.renderItem(item);
       return (
         <li
           key={id}
           className="list-group-item"
-          // eslint-disable-next-line react/prop-types
           onClick={() => {
-            // eslint-disable-next-line react/prop-types
             this.props.onItemSelected(id);
           }}
         >
@@ -58,3 +55,9 @@ export default class ItemList extends Component {
     return <ul className="item-list list-group">{items}</ul>;
   }
 }
+
+ItemList.propTypes = {
+  getData: PropTypes.func,
+  onItemSelected: PropTypes.func,
+  renderItem: PropTypes.func,
+};

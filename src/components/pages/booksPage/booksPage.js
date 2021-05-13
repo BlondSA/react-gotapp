@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React, { Component } from "react";
 import ItemList from "../../itemList";
 import ErrorMessage from "../../errorMessage";
@@ -19,7 +20,6 @@ class BooksPage extends Component {
     return (
       <ItemList
         onItemSelected={(itemId) => {
-          // eslint-disable-next-line react/prop-types
           this.props.history.push(itemId);
         }}
         getData={this.gotService.getAllBooks}
@@ -28,4 +28,11 @@ class BooksPage extends Component {
     );
   }
 }
+
+BooksPage.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+};
+
 export default withRouter(BooksPage);

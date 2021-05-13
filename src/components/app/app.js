@@ -58,7 +58,7 @@ export default class App extends Component {
             <Route
               path="/books/:id"
               render={({ match }) => {
-                const {id} = match.params;
+                const { id } = match.params;
                 return <BooksItem booksId={id} />;
               }}
             />
